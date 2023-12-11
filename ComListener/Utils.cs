@@ -6,6 +6,8 @@ namespace ComListener
 {
     public static class Utils
     {
+        private static readonly Random random = new Random();
+
         public static string GetPortByID(string VID, string PID)
         {
             string pattern = $"^VID_{VID}.PID_{PID}";
@@ -70,6 +72,28 @@ namespace ComListener
         public static string FromAscii(int asciiCode)
         {
             return Convert.ToChar(asciiCode).ToString();
+        }
+
+
+        public static double GetRandomWeight()
+        {
+            const double minWeight = 3.0;
+            const double maxWeight = 120.0;
+
+            return minWeight + (maxWeight - minWeight) * random.NextDouble();
+        }
+
+        public static double GetRandomHeight()
+        {
+            const double minHeight = 80.0;
+            const double maxHeight = 190.0;
+
+            return minHeight + (maxHeight - minHeight) * random.NextDouble();
+        }
+
+        public static double GetRandomBMI(double weight, double height)
+        {
+            return weight / Math.Pow(height / 100, 2);
         }
     }
 }

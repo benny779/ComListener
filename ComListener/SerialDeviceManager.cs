@@ -44,6 +44,10 @@ namespace ComListener
         public string ReadAsAstring() => Read().ToString();
 
 
+        public static DeviceResponse RandomRead() => DeviceResponse.CreateTest();
+        public static string RandomReadAsString() => RandomRead().ToString();
+
+
 
         public static string GetConnectedDeviceIDs()
         {

@@ -37,6 +37,21 @@
             };
         }
 
+        internal static DeviceResponse CreateTest()
+        {
+            var weight = Utils.GetRandomWeight();
+            var height = Utils.GetRandomHeight();
+            var bmi = Utils.GetRandomBMI(weight, height);
+
+            return new DeviceResponse()
+            {
+                Success = true,
+                Weight = weight.ToString("F3"),
+                Height = height.ToString("F2"),
+                BMI = bmi.ToString("F1")
+            };
+        }
+
         public override string ToString()
         {
             return Success ?
