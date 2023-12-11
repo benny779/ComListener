@@ -11,5 +11,6 @@
         DeviceResponse Read();
         DeviceResponse Parse(string value);
         bool IsValidResponse(string value);
+        DeviceResponse TestConnection();
     }
 }

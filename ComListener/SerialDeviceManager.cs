@@ -33,6 +33,9 @@ namespace ComListener
 
 
 
+        public DeviceResponse TestConnection() => device.TestConnection();
+        public string TestConnectionAsString() => TestConnection().ToString();
+
 
         /// <summary>
         /// Reads data from the managed serial device.
