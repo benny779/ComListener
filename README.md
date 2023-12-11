@@ -1,3 +1,3 @@
 # ComListener
 
-vs2019
+vs2022
