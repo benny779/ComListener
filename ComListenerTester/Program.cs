@@ -1,4 +1,5 @@
 ﻿using ComListener;
+using ComListener.CustomExceptions;
 using System;
 using System.IO.Ports;
 
@@ -8,37 +9,71 @@ namespace ComListenerTester
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("===========================");
-            Console.WriteLine("Note: ATD is set to port 10");
-            Console.WriteLine("===========================");
+            const string lineDelimiter = "===========================";
 
-            string[] ports = SerialPort.GetPortNames();
-            Console.WriteLine("Available COM ports:");
-            foreach (string p in ports)
+            while (true)
             {
-                Console.WriteLine(p);
-            }
-            Console.WriteLine("===========================");
-            Console.WriteLine();
+                Console.Clear();
 
-            Console.WriteLine("COM Port:");
-            int port = Convert.ToInt32(Console.ReadLine());
-            Console.WriteLine("Scale type (Default is \"1\"):");
-            int type = Convert.ToInt32(Console.ReadLine());
+                Console.WriteLine(lineDelimiter);
+                Console.WriteLine("Note: ATD is set to port 10");
+                Console.WriteLine(lineDelimiter);
+                Console.WriteLine();
 
-            Console.Clear();
-            Console.WriteLine("Selected port: " + port);
-            Console.WriteLine("Selected type: " + type);
-            Console.WriteLine();
+                Console.WriteLine("Available Device Types:");
+                Console.WriteLine("1: H650 Baby and Neonatal Scales");
+                Console.WriteLine("2: Healthweigh™ Ultrasonic Physician BMI Scale - H120");
+                Console.WriteLine();
+                Console.WriteLine(lineDelimiter);
+                Console.WriteLine();
 
+                var ports = SerialPort.GetPortNames();
+                Console.WriteLine("Available COM ports:");
+                foreach (string p in ports)
+                {
+                    Console.WriteLine(p);
+                }
+                Console.WriteLine();
+                Console.WriteLine(lineDelimiter);
+                Console.WriteLine();
 
-            Scales s = new Scales();
-            for (int i = 0; i < 100; i++)
-            {
-                string str = s.Scale(port, type);
-                Console.WriteLine(str);
-                Console.Write("");
-                Console.ReadKey();
+                Console.WriteLine("Connected devices found:");
+                Console.WriteLine(SerialDeviceManager.GetConnectedDeviceIDs().Replace("|", ", "));
+                Console.WriteLine();
+                Console.WriteLine(lineDelimiter);
+                Console.WriteLine();
+
+                Console.WriteLine("Device ID:");
+                int deviceId = int.Parse(Console.ReadLine());
+                Console.WriteLine("Default COM Port:");
+                Console.Write("COM");
+                string defaultPort = $"COM{Console.ReadLine()}";
+
+                Console.Clear();
+                Console.WriteLine("Selected device: " + deviceId);
+                Console.WriteLine("Selected port: " + defaultPort);
+                Console.WriteLine();
+
+                try
+                {
+                    var deviceManager = SerialDeviceManager.Create(deviceId, defaultPort);
+                    while (true)
+                    {
+                        Console.WriteLine(deviceManager.ReadAsAstring());
+                        Console.Write("");
+                        Console.ReadKey();
+                    }
+                }
+                catch (UnsupportedDeviceException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                }
+
+                Console.ReadLine();
             }
         }
     }
