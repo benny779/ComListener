@@ -4,10 +4,10 @@ using System.Threading;
 
 namespace ComListener.SerialDevices.Abstract
 {
-    internal abstract class SerialDeviceBaseWriteRead: SerialDeviceBase
+    internal abstract class SerialDeviceBaseWriteRead : SerialDeviceBase
     {
-        protected virtual int MaxReadLoops => 100;
-        protected virtual int SleepBetweenReadLoopsMs => 10;
+        protected virtual int MaxReadLoops => 20;
+        protected virtual int SleepBetweenReadLoopsMs => 15;
         protected abstract string PortRequestString { get; }
 
         protected SerialDeviceBaseWriteRead()

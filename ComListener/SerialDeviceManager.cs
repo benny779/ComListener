@@ -51,7 +51,7 @@ namespace ComListener
         public static string RandomReadAsString() => RandomRead().ToString();
 
 
-
+        // TODO: hide hidden ports
         public static string GetConnectedDeviceIDs()
         {
             return string.Join("|",

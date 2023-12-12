@@ -1,5 +1,6 @@
 ﻿using RJCP.IO.Ports;
 using System;
+using System.Threading;
 
 namespace ComListener.SerialDevices.Abstract
 {
@@ -19,10 +20,19 @@ namespace ComListener.SerialDevices.Abstract
             try
             {
                 using (var serialPort = new SerialPortStream(ComPort))
+                using (var wait = new ManualResetEvent(false))
                 {
                     serialPort.OpenDirect();
 
-                    var response = serialPort.ReadExisting();
+                    string response = string.Empty;
+
+                    serialPort.DataReceived += (s, e) =>
+                    {
+                        response = serialPort.ReadExisting();
+                        wait.Set();
+                    };
+
+                    wait.WaitOne();
 
                     if (IsValidResponse(response))
                         return Parse(response);
