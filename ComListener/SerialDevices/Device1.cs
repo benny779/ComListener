@@ -28,6 +28,7 @@ namespace ComListener.SerialDevices
         }
 
 
+        const string overloadedScaleValue = "9999.9";
         const int weightSubstringStart = 4;
         const int weightSubstringLength = 6;
         const int heightSubstringStart = 12;
@@ -37,6 +38,9 @@ namespace ComListener.SerialDevices
         public override DeviceResponse Parse(string value)
         {
             var weight = value.Substring(weightSubstringStart, weightSubstringLength).Trim();
+            if (weight == overloadedScaleValue)
+                weight = null;
+
             var height = value.Substring(heightSubstringStart, heightSubstringLength).Trim();
             var bmi = value.Substring(bmiSubstringStart, bmiSubstringLength).Trim();
 
