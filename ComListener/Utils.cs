@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using RJCP.IO.Ports;
 using System;
 using System.Text.RegularExpressions;
 
@@ -33,13 +34,34 @@ namespace ComListener
                             string name2 = subKeyNames3[0];
                             var registryKey4 = registryKey3.OpenSubKey(name2);
                             var registryKey5 = registryKey4.OpenSubKey("Device Parameters");
-                            return (string)registryKey5.GetValue("PortName");
+
+                            var portName = (string)registryKey5.GetValue("PortName");
+                            if (TestSerialPortConnection(portName).Success)
+                                return portName;
                         }
                     }
                 }
             }
 
             return null;
+        }
+
+
+        public static DeviceResponse TestSerialPortConnection(string portName)
+        {
+            try
+            {
+                using (var serialPort = new SerialPortStream(portName))
+                {
+                    serialPort.OpenDirect();
+                }
+
+                return DeviceResponse.Create();
+            }
+            catch (Exception ex)
+            {
+                return DeviceResponse.CreateError(ex.Message);
+            }
         }
 
 

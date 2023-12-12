@@ -36,19 +36,7 @@ namespace ComListener.SerialDevices.Abstract
 
         public virtual DeviceResponse TestConnection()
         {
-            try
-            {
-                using (var serialPort = new SerialPortStream(ComPort))
-                {
-                    serialPort.OpenDirect();
-                }
-
-                return DeviceResponse.Create();
-            }
-            catch (Exception ex)
-            {
-                return DeviceResponse.CreateError(ex.Message);
-            }
+            return Utils.TestSerialPortConnection(ComPort);
         }
     }
 }
