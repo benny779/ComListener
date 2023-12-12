@@ -51,7 +51,6 @@ namespace ComListener
         public static string RandomReadAsString() => RandomRead().ToString();
 
 
-        // TODO: hide hidden ports
         public static string GetConnectedDeviceIDs()
         {
             return string.Join("|",
@@ -66,6 +65,19 @@ namespace ComListener
                     DevicesRepository.Devices
                     .Where(d => !string.IsNullOrEmpty(Utils.GetPortByID(d.Value.VID, d.Value.PID)))
                     .Select(d => $"{d.Value.VID},{d.Value.PID}"));
+        }
+
+        public static string[] GetConnectedDevicesIdAndPort()
+        {
+            return DevicesRepository.Devices
+                .Select(d => new
+                {
+                    Id = d.Key,
+                    Port = Utils.GetPortByID(d.Value.VID, d.Value.PID)
+                })
+                .Where(d => !string.IsNullOrEmpty(d.Port))
+                .Select(d => $"ID: {d.Id}, Port: {d.Port}")
+                .ToArray();
         }
 
 

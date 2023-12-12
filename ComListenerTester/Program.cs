@@ -38,14 +38,18 @@ namespace ComListenerTester
                 Console.WriteLine();
 
                 Console.WriteLine("Connected devices found:");
-                Console.WriteLine(SerialDeviceManager.GetConnectedDeviceIDs().Replace("|", ", "));
+                foreach (var device in SerialDeviceManager.GetConnectedDevicesIdAndPort())
+                {
+                    Console.WriteLine(device);
+                }
                 Console.WriteLine();
                 Console.WriteLine(lineDelimiter);
+                Console.WriteLine();
                 Console.WriteLine();
 
                 Console.WriteLine("Device ID:");
                 int deviceId = int.Parse(Console.ReadLine());
-                Console.WriteLine("Default COM Port:");
+                Console.WriteLine("Default COM Port: (to be used if the tool doesn't detect itself)");
                 Console.Write("COM");
                 string defaultPort = $"COM{Console.ReadLine()}";
 
