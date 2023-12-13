@@ -9,7 +9,7 @@ namespace ComListener
     {
         private static readonly Random random = new Random();
 
-        public static string GetPortByID(string VID, string PID)
+        public static string GetPortByID(string VID, string PID, bool testConnection = true)
         {
             string pattern = $"^VID_{VID}.PID_{PID}";
             Regex regex = new Regex(pattern, RegexOptions.IgnoreCase);
@@ -36,7 +36,7 @@ namespace ComListener
                             var registryKey5 = registryKey4.OpenSubKey("Device Parameters");
 
                             var portName = (string)registryKey5.GetValue("PortName");
-                            if (TestSerialPortConnection(portName).Success)
+                            if (!testConnection || TestSerialPortConnection(portName).Success)
                                 return portName;
                         }
                     }
