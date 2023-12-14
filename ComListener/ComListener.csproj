@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CustomExceptions\DeviceNotSetException.cs" />
     <Compile Include="CustomExceptions\InvalidDeviceIDException.cs" />
     <Compile Include="CustomExceptions\UnsupportedDeviceException.cs" />
     <Compile Include="DeviceResponse.cs" />

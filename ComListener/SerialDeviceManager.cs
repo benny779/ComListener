@@ -1,6 +1,7 @@
 ﻿using ComListener.CustomExceptions;
 using ComListener.SerialDevices;
 using ComListener.SerialDevices.Abstract;
+using System;
 using System.Linq;
 
 namespace ComListener
@@ -9,31 +10,21 @@ namespace ComListener
     {
         ISerialDevice device;
 
-        private SerialDeviceManager()
-        {
-        }
 
         /// <summary>
-        /// Creates an instance of <see cref="SerialDeviceManager"/> configured with a specific device identified by the provided deviceId.
+        /// Sets the serial device identified by the provided deviceId.
         /// </summary>
         /// <param name="deviceId">An integer representing the unique identifier of the desired device.</param>
         /// <param name="defaultPort">An optional parameter specifying the default COM port to be used
         /// if the repository fails to auto-detect the connected port.</param>
-        /// <returns>A new instance of <see cref="SerialDeviceManager"/> with the specified device.</returns>
         /// <exception cref="UnsupportedDeviceException">Thrown when the provided deviceId does not correspond to a supported device.</exception>
-        public static SerialDeviceManager Create(int deviceId, string defaultPort = null)
+        public void SetDevice(int deviceId, string defaultPort = null)
         {
-            return new SerialDeviceManager()
-            {
-                device = GetDevice(deviceId, defaultPort)
-            };
-
+            device = GetDevice(deviceId, defaultPort);
         }
 
 
-
-
-        public DeviceResponse TestConnection() => device.TestConnection();
+        public DeviceResponse TestConnection() => SerialDeviceAction(device => device.TestConnection());
         public string TestConnectionAsString() => TestConnection().ToString();
 
 
@@ -41,17 +32,17 @@ namespace ComListener
         /// Reads data from the managed serial device.
         /// </summary>
         /// <returns></returns>
-        public DeviceResponse Read() => device.Read();
+        public DeviceResponse Read() => SerialDeviceAction(device => device.Read());
 
         /// <inheritdoc cref="Read"/>
-        public string ReadAsAstring() => Read().ToString();
+        public string ReadAsString() => Read().ToString();
 
 
-        public static DeviceResponse RandomRead() => DeviceResponse.CreateTest();
-        public static string RandomReadAsString() => RandomRead().ToString();
+        public DeviceResponse RandomRead() => DeviceResponse.CreateTest();
+        public string RandomReadAsString() => RandomRead().ToString();
 
 
-        public static string GetConnectedDeviceIDs()
+        public string GetConnectedDeviceIDs()
         {
             return string.Join("|",
                 DevicesRepository.Devices
@@ -59,7 +50,7 @@ namespace ComListener
                 .Select(d => d.Key));
         }
 
-        public static string GetConnectedDevicesVidPidIDs()
+        public string GetConnectedDevicesVidPidIDs()
         {
             return string.Join("|",
                     DevicesRepository.Devices
@@ -67,7 +58,7 @@ namespace ComListener
                     .Select(d => $"{d.Value.VID},{d.Value.PID}"));
         }
 
-        public static string[] GetConnectedDevicesIdAndPort()
+        public string[] GetConnectedDevicesIdAndPort()
         {
             return DevicesRepository.Devices
                 .Select(d => new
@@ -90,6 +81,14 @@ namespace ComListener
                 return new Device2(defaultPort);
 
             throw new UnsupportedDeviceException(deviceId);
+        }
+
+        private TResult SerialDeviceAction<TResult>(Func<ISerialDevice, TResult> action)
+        {
+            if (device is null)
+                throw new DeviceNotSetException();
+
+            return action(device);
         }
     }
 }

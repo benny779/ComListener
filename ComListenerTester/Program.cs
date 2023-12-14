@@ -10,6 +10,7 @@ namespace ComListenerTester
         static void Main(string[] args)
         {
             const string lineDelimiter = "===========================";
+            var deviceManager = new SerialDeviceManager();
 
             while (true)
             {
@@ -38,7 +39,7 @@ namespace ComListenerTester
                 Console.WriteLine();
 
                 Console.WriteLine("Connected devices found:");
-                foreach (var device in SerialDeviceManager.GetConnectedDevicesIdAndPort())
+                foreach (var device in deviceManager.GetConnectedDevicesIdAndPort())
                 {
                     Console.WriteLine(device);
                 }
@@ -60,15 +61,19 @@ namespace ComListenerTester
 
                 try
                 {
-                    var deviceManager = SerialDeviceManager.Create(deviceId, defaultPort);
+                    deviceManager.SetDevice(deviceId, defaultPort);
                     while (true)
                     {
-                        Console.WriteLine(deviceManager.ReadAsAstring());
+                        Console.WriteLine(deviceManager.ReadAsString());
                         Console.Write("");
                         Console.ReadKey();
                     }
                 }
                 catch (UnsupportedDeviceException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+                catch (DeviceNotSetException ex)
                 {
                     Console.WriteLine(ex.Message);
                 }
