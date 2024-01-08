@@ -23,26 +23,32 @@ namespace ComListener.SerialDevices
         {
         }
 
-        public Device1(string defaultPort) : base(defaultPort)
+        public Device1(string defaultPort, bool useDefaultPort)
+            : base(defaultPort, useDefaultPort)
         {
         }
 
 
-        const string overloadedScaleValue = "9999.9";
         const int weightSubstringStart = 4;
         const int weightSubstringLength = 6;
         const int heightSubstringStart = 12;
         const int heightSubstringLength = 5;
         const int bmiSubstringStart = 19;
         const int bmiSubstringLength = 4;
+        static readonly double[] valuesToExclude = { 9999.9, 99.999, 0 };
         public override DeviceResponse Parse(string value)
         {
-            var weight = value.Substring(weightSubstringStart, weightSubstringLength).Trim();
-            if (weight == overloadedScaleValue)
-                weight = null;
+            var weight = value
+                .Substring(weightSubstringStart, weightSubstringLength)
+                .ValidateDeviceResponseData(valuesToExclude);
 
-            var height = value.Substring(heightSubstringStart, heightSubstringLength).Trim();
-            var bmi = value.Substring(bmiSubstringStart, bmiSubstringLength).Trim();
+            var height = value
+                .Substring(heightSubstringStart, heightSubstringLength)
+                .ValidateDeviceResponseData(valuesToExclude);
+
+            var bmi = value
+                .Substring(bmiSubstringStart, bmiSubstringLength)
+                .ValidateDeviceResponseData(valuesToExclude);
 
             return DeviceResponse.Create(weight, height, bmi);
         }

@@ -10,7 +10,8 @@ namespace ComListener.SerialDevices.Abstract
         {
         }
 
-        protected SerialDeviceBaseRead(string defaultPort) : base(defaultPort)
+        protected SerialDeviceBaseRead(string defaultPort, bool useDefaultPort)
+            : base(defaultPort, useDefaultPort)
         {
         }
 

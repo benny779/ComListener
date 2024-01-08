@@ -1,5 +1,6 @@
 ﻿using RJCP.IO.Ports;
 using System;
+using System.IO;
 using System.Threading;
 
 namespace ComListener.SerialDevices.Abstract
@@ -14,7 +15,8 @@ namespace ComListener.SerialDevices.Abstract
         {
         }
 
-        protected SerialDeviceBaseWriteRead(string defaultPort) : base(defaultPort)
+        protected SerialDeviceBaseWriteRead(string defaultPort, bool useDefaultPort)
+            : base(defaultPort, useDefaultPort)
         {
         }
 

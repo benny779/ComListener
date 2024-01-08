@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32;
 using RJCP.IO.Ports;
 using System;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace ComListener
@@ -29,9 +30,9 @@ namespace ComListener
                         var registryKey3 = registryKey2.OpenSubKey(text);
                         var subKeyNames3 = registryKey3.GetSubKeyNames();
 
-                        if (subKeyNames3.Length > 0)
+                        foreach (var subKey in subKeyNames3)
                         {
-                            string name2 = subKeyNames3[0];
+                            string name2 = subKey;
                             var registryKey4 = registryKey3.OpenSubKey(name2);
                             var registryKey5 = registryKey4.OpenSubKey("Device Parameters");
 
@@ -116,6 +117,21 @@ namespace ComListener
         public static double GetRandomBMI(double weight, double height)
         {
             return weight / Math.Pow(height / 100, 2);
+        }
+
+
+        public static string ValidateDeviceResponseData(this string value, double[] valuesToExclude)
+        {
+            if (string.IsNullOrEmpty(value))
+                return null;
+
+            if (!double.TryParse(value, out var result))
+                return null;
+
+            if (valuesToExclude.Contains(result))
+                return null;
+
+            return value.Trim();
         }
     }
 }

@@ -2,6 +2,7 @@
 using ComListener.CustomExceptions;
 using System;
 using System.IO.Ports;
+using System.Linq;
 
 namespace ComListenerTester
 {
@@ -39,7 +40,15 @@ namespace ComListenerTester
                 Console.WriteLine();
 
                 Console.WriteLine("Connected devices found:");
-                foreach (var device in deviceManager.GetConnectedDevicesIdAndPort())
+                var connectedDevices = deviceManager
+                    .GetConnectedDevicesIdAndPort()
+                    .Split('|')
+                    .Select(d =>
+                    {
+                        var details = d.Split(',');
+                        return $"Device Id: {details[0]}, Port: {details[1]}";
+                    });
+                foreach (var device in connectedDevices)
                 {
                     Console.WriteLine(device);
                 }

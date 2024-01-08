@@ -17,11 +17,11 @@ namespace ComListener.SerialDevices.Abstract
 
         public SerialDeviceBase()
         {
-            this.UpdateComPort();
+            this.UpdateComPort(true);
         }
-        public SerialDeviceBase(string defaultPort)
+        public SerialDeviceBase(string defaultPort, bool useDefaultPort)
         {
-            if (!this.UpdateComPort())
+            if (useDefaultPort || !this.UpdateComPort(true))
                 ComPort = defaultPort;
         }
 

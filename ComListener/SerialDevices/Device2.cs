@@ -10,7 +10,8 @@
         {
         }
 
-        public Device2(string defaultPort) : base(defaultPort)
+        public Device2(string defaultPort, bool useDefaultPort)
+            : base(defaultPort, useDefaultPort)
         {
         }
     }

@@ -17,10 +17,12 @@ namespace ComListener
         /// <param name="deviceId">An integer representing the unique identifier of the desired device.</param>
         /// <param name="defaultPort">An optional parameter specifying the default COM port to be used
         /// if the repository fails to auto-detect the connected port.</param>
+        /// <param name="useDefaultPort">Indicating whether to force the use of the defaultPort,
+        /// skipping the repository auto-detection even if available.</param>
         /// <exception cref="UnsupportedDeviceException">Thrown when the provided deviceId does not correspond to a supported device.</exception>
-        public void SetDevice(int deviceId, string defaultPort = null)
+        public void SetDevice(int deviceId, string defaultPort = null, bool useDefaultPort = false)
         {
-            device = GetDevice(deviceId, defaultPort);
+            device = GetDevice(deviceId, defaultPort, useDefaultPort);
         }
 
 
@@ -58,27 +60,27 @@ namespace ComListener
                     .Select(d => $"{d.Value.VID},{d.Value.PID}"));
         }
 
-        public string[] GetConnectedDevicesIdAndPort()
+        public string GetConnectedDevicesIdAndPort()
         {
-            return DevicesRepository.Devices
+            return string.Join("|",
+                DevicesRepository.Devices
                 .Select(d => new
                 {
                     Id = d.Key,
                     Port = Utils.GetPortByID(d.Value.VID, d.Value.PID)
                 })
                 .Where(d => !string.IsNullOrEmpty(d.Port))
-                .Select(d => $"ID: {d.Id}, Port: {d.Port}")
-                .ToArray();
+                .Select(d => $"{d.Id},{d.Port}"));
         }
 
 
-        private static ISerialDevice GetDevice(int deviceId, string defaultPort = null)
+        private static ISerialDevice GetDevice(int deviceId, string defaultPort = null, bool useDefaultPort = false)
         {
             if (deviceId == 1)
-                return new Device1(defaultPort);
+                return new Device1(defaultPort, useDefaultPort);
 
             if (deviceId == 2)
-                return new Device2(defaultPort);
+                return new Device2(defaultPort, useDefaultPort);
 
             throw new UnsupportedDeviceException(deviceId);
         }
